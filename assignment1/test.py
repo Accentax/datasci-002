@@ -45,6 +45,8 @@ def tweetdict(fr):
 def scoringfunc(tweet,sent, sentgrams):
     scoring={}
     temp=[]
+    newterms=[]
+    newtermssent={}
     for t in tweet.keys():
         scoring[t]=0
         temp= tweet[t]
@@ -60,6 +62,13 @@ def scoringfunc(tweet,sent, sentgrams):
             for wrd in temp:
                 if wrd.encode(encoding='UTF-8',errors='strict') in sent.keys():
                     scoring[t]+=sent[wrd]
+                else:
+                    newterms.append(wrd)
+            for term in newterms:
+                if term in allterms.keys():#must create global dict with all new terms
+                    allterms[term]#do something
+                else:
+                    #add new term with the score 
 
                                         
                     # sentgram keys er str mens det jeg tester for er list,  konvertere fra list til string
@@ -69,6 +78,10 @@ def scoringfunc(tweet,sent, sentgrams):
             for wrd in tweet[t]:
                 if wrd.encode(encoding='UTF-8',errors='strict') in sent.keys():
                     scoring[t]+=sent[wrd]
+                else:
+                    newterms.append(wrd)
+                
+            # also add new for loop with all new terms her.
     return scoring
         
         
