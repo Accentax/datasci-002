@@ -45,12 +45,12 @@ def tweetdict(fr):
 def scoringfunc(tweet,sent, sentgrams):
     scoring={}
     temp=[]
-    newterms=[]
+    
     newtermssent={}
     for t in tweet.keys():
         scoring[t]=0
         temp= tweet[t]
-        
+        newterms=[]
         if len(temp)>1:
             for wrdgram in find_bigrams(temp)+find_trigrams(temp):
                 if " ".join(wrdgram) in sentgrams.keys():
@@ -64,13 +64,8 @@ def scoringfunc(tweet,sent, sentgrams):
                     scoring[t]+=sent[wrd]
                 else:
                     newterms.append(wrd)
-            for term in newterms:
-                if term in allterms.keys():#must create global dict with all new terms
-                    allterms[term]#do something
-                else:
-                    #add new term with the score 
-
-                                        
+        
+                                                       
                     # sentgram keys er str mens det jeg tester for er list,  konvertere fra list til string
                     #finner bi/tri gram fjerner fra temp.
                 
@@ -80,9 +75,18 @@ def scoringfunc(tweet,sent, sentgrams):
                     scoring[t]+=sent[wrd]
                 else:
                     newterms.append(wrd)
+        #print len(newterms)
+        #print t
+        for term in newterms:
+            
+            if term in newtermssent.keys():
                 
+                newtermssent[term][0]+=scoring[t]
+                newtermssent[term][1]+=1
+            else:
+                newtermssent[term]=[scoring[t],1]
             # also add new for loop with all new terms her.
-    return scoring
+    return scoring,newtermssent
         
         
 
@@ -94,10 +98,24 @@ def main():
     #lines(tweet_file)
     sents, sentgrams =sentdict(sent_file)
     tweets= tweetdict(tweet_file)
-    scores =scoringfunc(tweets,sents, sentgrams)
+    scores,newterms =scoringfunc(tweets,sents, sentgrams)
     
-    for i in tweets.keys():
-       print scores[i]
+    newsent={}
+    print len(newterms)
+    """for termkey in newterms:
+        print termkey, "termkey"
+        for term in newterms[termkey][0]:#ordlisten 
+            #print term
+            #print newterms[termkey][1]
+            if term in newsent.keys():
+                newsent[term][0]+=newterms[termkey][1]
+                newsent[term][1]+=1
+            else:
+                newsent[term]=[newterms[termkey][1],1]
+    """
+    for i in newterms.items():
+        if i[1][1]>10:
+            print i[0], 2*float(i[1][0])/(i[1][1])
 
 
 if __name__ == "__main__":
