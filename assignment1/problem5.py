@@ -40,15 +40,16 @@ def tweetdict(fr):
             tweets[i]= [re.sub("[^a-zA-Z']","", k) for k in json.loads(line)["text"].lower().split(" ") if re.sub("[^a-zA-Z']","", k)!=""]
         else:
             tweets[i]= []
-        i+=1
+        
         if "place" in json.loads(line).keys():
             if json.loads(line)["place"]!=None:
                 
                 place=json.loads(line)["place"]
                 if place["country_code"]=="US":
+                   # print place["full_name"].split(" ")[-1],json.loads(line)["text"]
                     if place["full_name"].split(" ")[-1] in states:
                         tweet_loc[i]= place["full_name"].split(" ")[-1]
-
+        i+=1
     return tweets,tweet_loc
 
 def scoringfunc(tweet,sent, sentgrams):
@@ -91,11 +92,21 @@ def main():
     sents, sentgrams =sentdict(sent_file)
     tweets,tweet_locs= tweetdict(tweet_file)
     scores =scoringfunc(tweets,sents, sentgrams)
+    
     state_score={key:[0,0] for key in states.keys()}
     for i in tweet_locs.keys():
-        state_score[tweet_locs[i]][0]+=1#antall
+        state_score[tweet_locs[i]][0]+=1
         state_score[tweet_locs[i]][1]+=scores[i]
-        print tweets[i],scores[i]
+        #print tweets[i],scores[i],tweet_locs[i]
+    #print state_score.items()    
+    import operator
+    for i in state_score.keys():
+        if state_score[i][0]!=0:
+            state_score[i]=state_score[i][1]/float(state_score[i][0])
+        else:
+            state_score[i]=0.0
+    #print state_score.items()
+    print max(state_score.iteritems(), key=operator.itemgetter(1))[0]
     
         
  #   for i in tweets.keys():
