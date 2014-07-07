@@ -52,8 +52,7 @@ def scoringfunc(tweet):
         
 
 def main():
-    sent_file = open(sys.argv[1])
-    tweet_file = open(sys.argv[2])
+    tweet_file = open(sys.argv[1])
     #hw()
     #lines(sent_file)
     #lines(tweet_file)
