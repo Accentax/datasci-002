@@ -1,28 +1,10 @@
 import sys
 import re
+import json
 
 def lines(fp):
     print str(len(fp.readlines()))
-    
-def find_bigrams(input_list):
-    return zip(input_list, input_list[1:])
 
-def find_trigrams(input_list):
-    return zip(input_list, input_list[1:], input_list[2:])
-
-def sentdict(sr): # function to put AFINN-111.txt sentiment scores into dictionary
-    scores={} #create dict
-    scoresgrams={}
-    for line in sr:
-        term, score = line.split("\t") # tab delimited lines with terms and scores
-        if " " in term:
-            scoresgrams[term]=int(score)
-
-        
-        else:
-            scores[term]= int(score)
-    return scores, scoresgrams
-import json
 
 def tweetdict(fr):
     tweets={}
@@ -42,57 +24,30 @@ def tweetdict(fr):
         
     return tweets
 
-def scoringfunc(tweet,sent, sentgrams):
-    scoring={}
+def scoringfunc(tweet):
+    
     temp=[]
     
     newtermssent={}
     for t in tweet.keys():
         #print tweet[t]
-        scoring[t]=0
+        
         temp= tweet[t]
         newterms=[]
-        if len(temp)>1:
-            for wrdgram in find_bigrams(temp)+find_trigrams(temp):
-                if " ".join(wrdgram) in sentgrams.keys():
-                    #print " ".join(wrdgram)
-                    scoring[t]+=sentgrams[" ".join(wrdgram)]
-                    for i in wrdgram:
-                        temp.remove(i)
-           # print temp
-            #print wrdgram
-            for wrd in temp:
-                
-                if wrd.encode(encoding='UTF-8',errors='strict') in sent.keys():
-                    scoring[t]+=sent[wrd]
-                else:
-                    newterms.append(wrd)
         
-                                                       
-                    # sentgram keys er str mens det jeg tester for er list,  konvertere fra list til string
-                    #finner bi/tri gram fjerner fra temp.
-                
-        else:
-            for wrd in tweet[t]:
-             #   print wrd
-                if wrd.encode(encoding='UTF-8',errors='strict') in sent.keys():
-                    scoring[t]+=sent[wrd]
-                else:
-                    newterms.append(wrd)
-        #print (newterms)
-        #print t
+        for wrd in temp:
+            newterms.append(wrd)
         
         for term in newterms:
             
             if term in newtermssent.keys():
                 
-                newtermssent[term][0]+=scoring[t]
-                newtermssent[term][1]+=1
+                newtermssent[term]+=1
             else:
-                newtermssent[term]=[scoring[t],1]
+                newtermssent[term]=1
     
             # also add new for loop with all new terms her.
-    return scoring,newtermssent
+    return newtermssent
         
         
 
@@ -102,15 +57,15 @@ def main():
     #hw()
     #lines(sent_file)
     #lines(tweet_file)
-    sents, sentgrams =sentdict(sent_file)
+
     tweets= tweetdict(tweet_file)
-    scores,newterms =scoringfunc(tweets,sents, sentgrams)
+    scores =scoringfunc(tweets)
     
-    newsent={}
+    newterms=scores
     #print len(newterms)
-    allterms=sum([i[1][1] for i in newterms.items()])
+    allterms=sum([i[1] for i in newterms.items()])
     for i in newterms.items():
-        print i[0],i[1][1]/float(allterms)
+        print i[0],i[1]/float(allterms)
 
 
 if __name__ == "__main__":
