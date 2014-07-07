@@ -36,6 +36,7 @@ def tweetdict(fr):
             #re.sub("[^a-zA-Z]","", old_string)
             #tweets[i]=json.loads(line)["text"]
             tweets[i]= [re.sub("[^a-zA-Z']","", k) for k in json.loads(line)["text"].lower().split(" ") if re.sub("[^a-zA-Z']","", k)!=""]
+      #      print tweets[i]
         else:
             tweets[i]= []
         i+=1
@@ -58,6 +59,7 @@ def scoringfunc(tweet,sent, sentgrams):
                     scoring[t]+=sentgrams[" ".join(wrdgram)]
                     tempset=set(temp)
                     wrdgset=set(wrdgram)
+                    
                     temp=list(tempset-wrdgset)
             for wrd in temp:
                 if wrd.encode(encoding='UTF-8',errors='strict') in sent.keys():
@@ -101,7 +103,7 @@ def main():
     scores,newterms =scoringfunc(tweets,sents, sentgrams)
     
     newsent={}
-    print len(newterms)
+    #print len(newterms)
     """for termkey in newterms:
         print termkey, "termkey"
         for term in newterms[termkey][0]:#ordlisten 
