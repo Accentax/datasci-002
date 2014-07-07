@@ -1,6 +1,6 @@
 import sys
 import re
-#test
+
 def hw():
     print 'Hello, world!'
 
@@ -114,8 +114,7 @@ def main():
                 newsent[term]=[newterms[termkey][1],1]
     """
     for i in newterms.items():
-        if i[1][1]>10:
-            print i[0], 2*float(i[1][0])/(i[1][1])
+        print i[0], 2*float(i[1][0])/(i[1][1])
 
 
 if __name__ == "__main__":
