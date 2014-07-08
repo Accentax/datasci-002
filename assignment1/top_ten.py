@@ -34,13 +34,11 @@ def main():
     #lines(tweet_file)
 
     hashtags= tweetdict(tweet_file)
-    h=["",0]
-    for i in hashtags.keys():
-        if hashtags[i]>h[1]:
-            h[0]=i
-            h[1]=hashtags[i]
-            #print i,h[1]
-    print h[0],h[1]
+    import operator
+    sorted_tags=sorted(hashtags.iteritems(), key=operator.itemgetter(1))
+    sorted_tags.reverse()
+    for i in sorted_tags[:10]:
+        print i[0],i[1]
     
 if __name__ == "__main__":
     main()
